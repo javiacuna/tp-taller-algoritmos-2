@@ -30,7 +30,7 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 			int entero;
 			long cont = 0;
 			long tamano = file.length();
-			System.out.print("tama�o: ");
+			System.out.print("tama�o: ");
 			System.out.println(tamano);
 			while (cont < tamano) {
 				file.seek(cont);
@@ -57,7 +57,6 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 	@Override
 	public void generarArchivoComprimido(String nomArchivo, String nomArchivoDestino) {
 		String strBuffer = "";
-		String strBuffertmp = "";
 		File arch = new File(nomArchivoDestino);
 		if (arch.delete())
 			System.out.println("archivo borrado");
@@ -71,11 +70,21 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 				archivoOrigen.seek(cont);
 				dato = (char) archivoOrigen.readByte();
 				strBuffer = strBuffer + this.tablaHasHuffmanCodigos.get(dato);
-				strBuffertmp = strBuffertmp + " " + this.tablaHasHuffmanCodigos.get(dato);
-				strBuffer = procesarbuffer(strBuffer, archivoDestino);
+				if(strBuffer.length() >= 8) {
+					byte byteValue = stringByteToByte(strBuffer.substring(0, 8));
+					archivoDestino.writeByte(byteValue);
+					strBuffer = strBuffer.substring(8);
+				}
 				cont++;
 			}
-			System.out.println(strBuffertmp);
+			// Procesar el último carácter
+			if(strBuffer.length() > 0) {
+				while(strBuffer.length() < 8) {
+					strBuffer = strBuffer + "0";
+				}
+				byte byteValue = stringByteToByte(strBuffer);
+				archivoDestino.writeByte(byteValue);
+			}
 			archivoOrigen.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -87,42 +96,17 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 		while (Auxstr.length() >= 8) {
 			strIingByte = Auxstr.substring(0, 8);
 			Auxstr = Auxstr.substring(8, Auxstr.length());
-			archivo.writeByte(stringByteToByte(strIingByte));
+			byte byteValue = stringByteToByte(strIingByte);
+			System.out.println("byteValue: " + byteValue);
+			archivo.writeByte(byteValue);
 		}
 		return Auxstr;
 	}
 
-	private byte stringByteToByte(String strToByte) {
-		System.out.println("strToByte: "+strToByte);
-		byte Byteresult = 0;
-		int Intresult = 0;
-
-		if (strToByte.length() > 0)
-			if (Integer.parseInt(strToByte.substring(0, 1)) > 0)
-				Intresult = Intresult + 128;
-		if (strToByte.length() > 1)
-			if (Integer.parseInt(strToByte.substring(1, 2)) > 0)
-				Intresult = Intresult + 64;
-		if (strToByte.length() > 2)
-			if (Integer.parseInt(strToByte.substring(2, 3)) > 0)
-				Intresult = Intresult + 32;
-		if (strToByte.length() > 3)
-			if (Integer.parseInt(strToByte.substring(3, 4)) > 0)
-				Intresult = Intresult + 16;
-		if (strToByte.length() > 4)
-			if (Integer.parseInt(strToByte.substring(4, 5)) > 0)
-				Intresult = Intresult + 8;
-		if (strToByte.length() > 5)
-			if (Integer.parseInt(strToByte.substring(5, 6)) > 0)
-				Intresult = Intresult + 4;
-		if (strToByte.length() > 6)
-			if (Integer.parseInt(strToByte.substring(6, 7)) > 0)
-				Intresult = Intresult + 2;
-		if (strToByte.length() > 7)
-			if (Integer.parseInt(strToByte.substring(7, 8)) > 0)
-				Intresult = Intresult + 1;
-		Byteresult = (byte) Intresult;
-		return Byteresult;
+	public byte stringByteToByte(String strByte) {
+		int intValue = Integer.parseInt(strByte, 2);
+		byte byteValue = (byte) intValue;
+		return byteValue;
 	}
 	
 	public HashMap<Character, String> getTablaHasHuffmanCodigos() {
@@ -159,20 +143,21 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 				strCharacter=strCharacter+completarByte(Integer.toBinaryString((char) archivoOrigen.readByte() & 0xff));
 				cont++;
 			}
-			for(char c: strCharacter.toCharArray()) {
-				if(!this.tablaHasInvHuffmanCodigos.containsKey(codigo))
-					codigo=codigo+String.valueOf(c);
-				else {
+			int i = 0;
+			while(i < strCharacter.length()) {
+				codigo = codigo + strCharacter.charAt(i);
+				if(this.tablaHasInvHuffmanCodigos.containsKey(codigo)) {
 					archivoDestino.writeByte((char)this.tablaHasInvHuffmanCodigos.get(codigo));
-					codigo=String.valueOf(c);
-				}	
+					codigo = "";
+				}
+				i++;
 			}
 			archivoOrigen.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private String completarByte(String strByte) {
 		String strIni="";
 		for(int i=strByte.length();i<8;i++) {
