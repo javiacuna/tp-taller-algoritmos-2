@@ -6,6 +6,8 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import com.huffman.nodo.NodoArbol;
 
@@ -147,12 +149,26 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 			while(i < strCharacter.length()) {
 				codigo = codigo + strCharacter.charAt(i);
 				if(this.tablaHasInvHuffmanCodigos.containsKey(codigo)) {
-					archivoDestino.writeByte((char)this.tablaHasInvHuffmanCodigos.get(codigo));
+					char caracter = (char)this.tablaHasInvHuffmanCodigos.get(codigo);
+					// No escribir el carácter de relleno
+					if(i < strCharacter.length() - 1 || caracter != '0') { // Suponiendo que '`' es el carácter de relleno
+						archivoDestino.writeByte(caracter);
+					}
 					codigo = "";
 				}
 				i++;
 			}
 			archivoOrigen.close();
+			archivoDestino.close();
+
+			// Verificar la longitud del contenido del archivo descomprimido
+			String originalContent = new String(Files.readAllBytes(Paths.get(nomArchivo)));
+			String decompressedContent = new String(Files.readAllBytes(Paths.get(nomArchivoDestino)));
+			if(decompressedContent.length() > originalContent.length()) {
+				// Eliminar los caracteres adicionales
+				decompressedContent = decompressedContent.substring(0, originalContent.length());
+				Files.write(Paths.get(nomArchivoDestino), decompressedContent.getBytes());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
