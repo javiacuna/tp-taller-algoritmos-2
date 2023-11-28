@@ -114,7 +114,7 @@ public class Quiniela {
         Quiniela quinielaManager = new Quiniela();
 
         try {
-            quinielaManager.cargarSorteoDesdeCSV("sorteo.csv");
+            quinielaManager.cargarSorteoDesdeCSV("sorteo.txt");
             quinielaManager.agregarTicketDesdeCSV("apuestas.csv");
             quinielaManager.verificarTickets();
         } catch (IOException e) {

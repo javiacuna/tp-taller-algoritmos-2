@@ -146,12 +146,12 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 				cont++;
 			}
 			int i = 0;
-			while(i < strCharacter.length()) {
+			while(i < strCharacter.length()+1) {
 				codigo = codigo + strCharacter.charAt(i);
 				if(this.tablaHasInvHuffmanCodigos.containsKey(codigo)) {
 					char caracter = (char)this.tablaHasInvHuffmanCodigos.get(codigo);
 					// No escribir el carácter de relleno
-					if(i < strCharacter.length() - 1 || caracter != '0') { // Suponiendo que '`' es el carácter de relleno
+					if(i < strCharacter.length() - 1 || caracter != '`') { // Suponiendo que '`' es el carácter de relleno
 						archivoDestino.writeByte(caracter);
 					}
 					codigo = "";
@@ -171,6 +171,8 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (StringIndexOutOfBoundsException s){
+
 		}
 	}
 
