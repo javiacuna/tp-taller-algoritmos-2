@@ -3,38 +3,56 @@ package com.huffman.principal;
 import com.adm.archivo.AdmArchivo;
 import com.huffman.arbol.ArbolHuffman;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main {
 
-    private static ArbolHuffman arbolHuffman;
-    private static AdmArchivo admArchivo;
-    private static String NOMBRE_ARCHIVO = "/Users/jaacuna/tp-taller-algoritmos-2/pruebaCompresion.txt";
-    private static String NOMBRE_ARCHIVO_DESCOMPRIMIR = "/Users/jaacuna/tp-taller-algoritmos-2/pruebaDescompresion.txt";
-    private static String NOMBRE_ARCHIVO_TABLA = "/Users/jaacuna/tp-taller-algoritmos-2/tabla_huffman.txt";
-    private static String NOMBRE_ARCHIVO_A_COMPRIMIR = "/Users/jaacuna/tp-taller-algoritmos-2/sorteo.txt";
+    private static AdmArchivo admSorteo;
+    private static ArbolHuffman sorteoHuffman;
+    private static AdmArchivo admJugada;
+    private static ArbolHuffman jugadaHuffman;
+    
+    private static String JUGADA_ARCHIVO_A_COMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\jugada\\jugadaAComprimir.txt";
+    private static String JUGADA_ARCHIVO_DESCOMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\jugada\\jugadaDescomprimir.txt";
+    private static String JUGADA_ARCHIVO_TABLA = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\jugada\\jugadaTabla.txt";
+
+    private static String SORTEO_ARCHIVO_A_COMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\sorteo\\sorteoAComprimir.txt";
+    private static String SORTEO_ARCHIVO_DESCOMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\sorteo\\sorteoDescomprimir.txt";
+    private static String SORTEO_ARCHIVO_TABLA = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\sorteo\\sorteoTabla.txt";
 
     public static void main(String[] args) {
 
-         admArchivo= new AdmArchivo();
-         arbolHuffman= new ArbolHuffman();
-         admArchivo.cargarTablaHuffman(NOMBRE_ARCHIVO_TABLA);
-         arbolHuffman.setTablaHasHuffmanCodigos(admArchivo.getTablaHasHuffmanCodigos());
-         arbolHuffman.procesarListaDeArboles(arbolHuffman.crearListaArboles(admArchivo.getTablaHuffman()));
-         arbolHuffman.generarCodigoHuffman(arbolHuffman.getNodoArbol2(),"");
-         admArchivo.generarArchivoComprimido(NOMBRE_ARCHIVO_A_COMPRIMIR, NOMBRE_ARCHIVO_A_COMPRIMIR+".compress");
-         admArchivo.descomprimir(NOMBRE_ARCHIVO_A_COMPRIMIR+".compress", NOMBRE_ARCHIVO_DESCOMPRIMIR);
-         }
-          /**
-
         Quiniela quiniela = new Quiniela();
+        admSorteo = new AdmArchivo();
+        sorteoHuffman = new ArbolHuffman();
+        admJugada = new AdmArchivo();
+        jugadaHuffman = new ArbolHuffman();
 
+        //SORTEO
+        admSorteo.cargarTablaHuffman(SORTEO_ARCHIVO_TABLA);
+        sorteoHuffman.setTablaHasHuffmanCodigos(admSorteo.getTablaHasHuffmanCodigos());
+        sorteoHuffman.procesarListaDeArboles(sorteoHuffman.crearListaArboles(admSorteo.getTablaHuffman()));
+        sorteoHuffman.generarCodigoHuffman(sorteoHuffman.getNodoArbol2(),"");
+        admSorteo.generarArchivoComprimido(SORTEO_ARCHIVO_A_COMPRIMIR, SORTEO_ARCHIVO_A_COMPRIMIR+".compress");
+        admSorteo.descomprimir(SORTEO_ARCHIVO_A_COMPRIMIR+".compress", SORTEO_ARCHIVO_DESCOMPRIMIR);
+
+        //JUGADA
+        admJugada.cargarTablaHuffman(JUGADA_ARCHIVO_TABLA);
+        jugadaHuffman.setTablaHasHuffmanCodigos(admJugada.getTablaHasHuffmanCodigos());
+        jugadaHuffman.procesarListaDeArboles(jugadaHuffman.crearListaArboles(admJugada.getTablaHuffman()));
+        jugadaHuffman.generarCodigoHuffman(jugadaHuffman.getNodoArbol2(),"");
+        admJugada.generarArchivoComprimido(JUGADA_ARCHIVO_A_COMPRIMIR, JUGADA_ARCHIVO_A_COMPRIMIR+".compress");
+        admJugada.descomprimir(JUGADA_ARCHIVO_A_COMPRIMIR+".compress", JUGADA_ARCHIVO_DESCOMPRIMIR);
+
+        // Archivos DESCOMPRIMIDOS en QUINIELA
         try {
-            quiniela.cargarSorteoDesdeCSV("/Users/jaacuna/tp-taller-algoritmos-2/sorteo.txt");
-            quiniela.agregarTicketDesdeCSV("/Users/jaacuna/tp-taller-algoritmos-2/apuestas.csv");
+            quiniela.cargarSorteoDesdeCSV(SORTEO_ARCHIVO_DESCOMPRIMIR);
+            quiniela.agregarTicketDesdeCSV(JUGADA_ARCHIVO_DESCOMPRIMIR);
             quiniela.verificarTickets();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    } **/
+    }
 }
+
