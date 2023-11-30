@@ -8,14 +8,22 @@ import java.util.List;
 
 public class Quiniela {
     private Sorteo sorteoActual;
+    private String turno;
     private List<Ticket> tickets;
+    private List<Premio> premios;
 
-    public Quiniela() {
+    public Quiniela(String turno) {
+        if(turno.equals("maniana")){
+            this.turno = "maniana";
+        }else{
+            this.turno = "noche";
+        }
         this.sorteoActual = null;
         this.tickets = new ArrayList<>();
+        this.premios = new ArrayList<>();
     }
 
-    public void cargarSorteoDesdeCSV(String rutaArchivo) throws IOException {
+    public void cargarSorteo(String rutaArchivo) throws IOException {
         List<Integer> numerosSorteados = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
@@ -29,7 +37,7 @@ public class Quiniela {
         this.sorteoActual = new Sorteo(numerosSorteados);
     }
 
-    public void agregarTicketDesdeCSV(String rutaArchivo) throws IOException {
+    public void agregarTicket(String rutaArchivo) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
@@ -44,81 +52,93 @@ public class Quiniela {
 
     public void verificarTickets() {
         if (sorteoActual == null) {
-            System.out.println("Error: No se ha cargado el sorteo. Utilice cargarSorteoDesdeCSV() primero.");
+            System.out.println("Error: No se ha cargado el sorteo. Utilice cargarSorteo() primero.");
             return;
         }
-
+    
         for (Ticket ticket : tickets) {
-            int numeroTicket = ticket.getNumero();
-            int posicionTicket = ticket.getPosicion();
+            int numeroTicket = ticket.getNumero(); //9876
+            int posicionTicket = ticket.getPosicion(); //3
+        
+            double montoTotal = 0;
+        
+            for (int i = 0; i < posicionTicket; i++) {
+                int ultimoDigitoSorteo = sorteoActual.getNumerosSorteados().get(i) % 10;
+                int ultimasDosCifrasSorteo = sorteoActual.getNumerosSorteados().get(i) % 100;
+                int ultimasTresCifrasSorteo = sorteoActual.getNumerosSorteados().get(i) % 1000;
+    
+                if (numeroTicket == ultimoDigitoSorteo) {
+                    // ganador, factor premio = 7
+                    montoTotal += calcularPremio(ticket.getApuesta(), 7, ticket.getPosicion());
 
-            int ultimoDigitoSorteo = sorteoActual.getNumerosSorteados().get(posicionTicket - 1) % 10;
-            int ultimasDosCifrasSorteo = sorteoActual.getNumerosSorteados().get(posicionTicket - 1) % 100;
-            int ultimasTresCifrasSorteo = sorteoActual.getNumerosSorteados().get(posicionTicket - 1) % 1000;
+                } else if (numeroTicket == ultimasDosCifrasSorteo) {
+                    // ganador, factor premio = 70
+                    montoTotal += calcularPremio(ticket.getApuesta(), 70, ticket.getPosicion());
 
-            if (numeroTicket == ultimoDigitoSorteo) {
-                informarGanador(ticket, 7);
-            } else if (numeroTicket == ultimasDosCifrasSorteo) {
-                informarGanador(ticket, 70);
-            } else if (numeroTicket == ultimasTresCifrasSorteo) {
-                informarGanador(ticket, 500);
-            } else if (numeroTicket == sorteoActual.getNumerosSorteados().get(posicionTicket - 1)) {
-                informarGanador(ticket, 3500);
-            } else {
-                informarNoGanador(ticket);
-            }
-        }
-    }
-
-    private void informarGanador(Ticket ticket, int factorPremio) {
-        int apuesta = ticket.getApuesta();
-        int numero = ticket.getNumero();
-        int posicion = ticket.getPosicion();
-
-        double premio = calcularPremio(apuesta, factorPremio, posicion, numero);
-
-        System.out.println("¡Felicidades! El ticket es ganador. Premio: $" + premio);
-        System.out.println("Número del ticket ganador: " + numero);
-        System.out.println("Posición del ticket ganador: " + posicion);
-        System.out.println("---------------------------------------");
-    }
-
-    private double calcularPremio(int apuesta, int factorPremio, int posicion, int numeroTicket) {
-        double monto = apuesta * factorPremio;
-
-        if (posicion <= 5) {
-            return monto / posicion;
-        } else {
-            int cantidadRepeticiones = 0;
-            for (int numeroSorteo : sorteoActual.getNumerosSorteados()) {
-                if (numeroSorteo == numeroTicket) {
-                    cantidadRepeticiones++;
-                    if (cantidadRepeticiones >= 15) {
-                        break;
-                    }
+                } else if (numeroTicket == ultimasTresCifrasSorteo) {
+                    // ganador, factor premio = 500 
+                    montoTotal += calcularPremio(ticket.getApuesta(), 500, ticket.getPosicion());
+                    
+                } else if (numeroTicket == sorteoActual.getNumerosSorteados().get(i)) {
+                    // ganador, factor premio = 3500
+                    montoTotal += calcularPremio(ticket.getApuesta(), 3500, ticket.getPosicion());
                 }
             }
-            return monto * cantidadRepeticiones / 15;
+            // descontar apuesta
+            montoTotal -= ticket.getApuesta();
+            premios.add(new Premio(-montoTotal));
         }
     }
 
-    private void informarNoGanador(Ticket ticket) {
-        int numero = ticket.getNumero();
-
-        System.out.println("Lo siento, el ticket no es ganador.");
-        System.out.println("Número del ticket perdedor: " + numero);
-        System.out.println("---------------------------------------");
+    public double calcularPremio(int apuesta, int factorPremio, int posicion){
+        return (apuesta * factorPremio) / posicion;
     }
 
-    public static void main(String[] args) {
-        Quiniela quinielaManager = new Quiniela();
-
-        try {
-            quinielaManager.cargarSorteoDesdeCSV("sorteo.txt");
-            quinielaManager.agregarTicketDesdeCSV("apuestas.csv");
-            quinielaManager.verificarTickets();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void calcularGananciaJornada(){
+        double total = 0;
+        for (Premio premio : premios){
+            total += premio.getMonto();
         }
+        System.out.println("Balance total de la " + this.turno + ": " + total);
     }
 }
+
+// private double calcularPremio(int apuesta, int factorPremio, int posicion, int numeroTicket) {
+//     double monto = apuesta * factorPremio;
+    
+//     if (posicion <= 5) {
+//         return monto / posicion;
+//     } else {
+//         int cantidadRepeticiones = 0;
+//         for (int numeroSorteo : sorteoActual.getNumerosSorteados()) {
+//             if (numeroSorteo == numeroTicket) {
+//                 cantidadRepeticiones++;
+//                 if (cantidadRepeticiones >= 15) {
+//                     break;
+//                 }
+//             }
+//         }
+//         return monto * cantidadRepeticiones / 15;
+//     }
+// }
+
+// private void informarGanador(Ticket ticket, int factorPremio) {
+//     int apuesta = ticket.getApuesta();
+//     int numero = ticket.getNumero();
+//     int posicion = ticket.getPosicion();
+
+//     double premio = calcularPremio(apuesta, factorPremio, posicion, numero);
+
+//     System.out.println("¡Felicidades! El ticket es ganador. Premio: $" + premio);
+//     System.out.println("Número del ticket ganador: " + numero);
+//     System.out.println("Posición del ticket ganador: " + posicion);
+//     System.out.println("---------------------------------------");
+// }
+
+// private void informarNoGanador(Ticket ticket) {
+//     int numero = ticket.getNumero();
+
+//     System.out.println("Lo siento, el ticket no es ganador.");
+//     System.out.println("Número del ticket perdedor: " + numero);
+//     System.out.println("---------------------------------------");
+// }

@@ -13,19 +13,23 @@ public class Main {
     private static AdmArchivo admJugada;
     private static ArbolHuffman jugadaHuffman;
     
-    private static String JUGADA_ARCHIVO_A_COMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\jugada\\jugadaAComprimir.txt";
-    private static String JUGADA_ARCHIVO_DESCOMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\jugada\\jugadaDescomprimir.txt";
-    private static String JUGADA_ARCHIVO_TABLA = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\jugada\\jugadaTabla.txt";
+    private static String JUGADA_ARCHIVO_A_COMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2\\src\\txt\\jugada\\jugadaAComprimir.txt";
+    private static String JUGADA_ARCHIVO_DESCOMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2\\src\\txt\\jugada\\jugadaDescomprimir.txt";
+    private static String JUGADA_ARCHIVO_TABLA = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2\\src\\txt\\jugada\\jugadaTabla.txt";
 
-    private static String SORTEO_ARCHIVO_A_COMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\sorteo\\sorteoAComprimir.txt";
-    private static String SORTEO_ARCHIVO_DESCOMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\sorteo\\sorteoDescomprimir.txt";
-    private static String SORTEO_ARCHIVO_TABLA = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2-1\\src\\txt\\sorteo\\sorteoTabla.txt";
+    private static String SORTEO_ARCHIVO_A_COMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2\\src\\txt\\sorteo\\sorteoAComprimir.txt";
+    private static String SORTEO_ARCHIVO_DESCOMPRIMIR = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2\\src\\txt\\sorteo\\sorteoDescomprimir.txt";
+    private static String SORTEO_ARCHIVO_TABLA = "C:\\Users\\ignac\\OneDrive\\Escritorio\\Scripts\\tp-taller-algoritmos-2\\src\\txt\\sorteo\\sorteoTabla.txt";
 
     public static void main(String[] args) {
 
-        Quiniela quiniela = new Quiniela();
+        Quiniela quinielaManiana = new Quiniela("maniana"); // podriamos usar un enum y hay que sacar esta informacion del nombre del archivo
+        Quiniela quinielaNoche = new Quiniela("noche");     // despues pasarle distintos .txt a la quinielaManiana y quinielaNoche
+                                                                  // borrar algunos archivos que no se usan, algunos system.out() que no se usan y revisar todo el codigo
+
         admSorteo = new AdmArchivo();
         sorteoHuffman = new ArbolHuffman();
+
         admJugada = new AdmArchivo();
         jugadaHuffman = new ArbolHuffman();
 
@@ -47,9 +51,16 @@ public class Main {
 
         // Archivos DESCOMPRIMIDOS en QUINIELA
         try {
-            quiniela.cargarSorteoDesdeCSV(SORTEO_ARCHIVO_DESCOMPRIMIR);
-            quiniela.agregarTicketDesdeCSV(JUGADA_ARCHIVO_DESCOMPRIMIR);
-            quiniela.verificarTickets();
+            quinielaManiana.cargarSorteo(SORTEO_ARCHIVO_DESCOMPRIMIR);
+            quinielaManiana.agregarTicket(JUGADA_ARCHIVO_DESCOMPRIMIR);
+            quinielaManiana.verificarTickets();
+            quinielaManiana.calcularGananciaJornada();
+
+            quinielaNoche.cargarSorteo(SORTEO_ARCHIVO_DESCOMPRIMIR);
+            quinielaNoche.agregarTicket(JUGADA_ARCHIVO_DESCOMPRIMIR);
+            quinielaNoche.verificarTickets();
+            quinielaNoche.calcularGananciaJornada();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
