@@ -20,11 +20,11 @@ public class ArbolHuffman implements ICrearListaDeArboles {
 				pos++;
 				NodoArbol nodo = new NodoArbol( key, mapTablaHuffman.get(key));
 				nodoArbols.add(nodo);
-				System.out.print("Nodo ");
-				System.out.print(pos);
-				System.out.print(" " + key + "(");
-				System.out.print(mapTablaHuffman.get(key));
-				System.out.print("); ");
+				// System.out.print("Nodo ");
+				// System.out.print(pos);
+				// System.out.print(" " + key + "(");
+				// System.out.print(mapTablaHuffman.get(key));
+				// System.out.print("); ");
 			}
 
 		}

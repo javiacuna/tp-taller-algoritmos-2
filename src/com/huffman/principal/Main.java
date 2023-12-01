@@ -23,9 +23,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Quiniela quinielaManiana = new Quiniela("maniana"); // podriamos usar un enum y hay que sacar esta informacion del nombre del archivo
-        Quiniela quinielaNoche = new Quiniela("noche");     // despues pasarle distintos .txt a la quinielaManiana y quinielaNoche
-                                                                  // borrar algunos archivos que no se usan, algunos system.out() que no se usan y revisar todo el codigo
+        Quiniela quinielaManiana = new Quiniela("maniana");
+        // Quiniela quinielaNoche = new Quiniela("noche");
 
         admSorteo = new AdmArchivo();
         sorteoHuffman = new ArbolHuffman();
@@ -56,10 +55,10 @@ public class Main {
             quinielaManiana.verificarTickets();
             quinielaManiana.calcularGananciaJornada();
 
-            quinielaNoche.cargarSorteo(SORTEO_ARCHIVO_DESCOMPRIMIR);
-            quinielaNoche.agregarTicket(JUGADA_ARCHIVO_DESCOMPRIMIR);
-            quinielaNoche.verificarTickets();
-            quinielaNoche.calcularGananciaJornada();
+            // quinielaNoche.cargarSorteo(SORTEO_ARCHIVO_DESCOMPRIMIR);
+            // quinielaNoche.agregarTicket(JUGADA_ARCHIVO_DESCOMPRIMIR);
+            // quinielaNoche.verificarTickets();
+            // quinielaNoche.calcularGananciaJornada();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -85,6 +85,9 @@ public class Quiniela {
                 }
             }
             // descontar apuesta
+            if(montoTotal > 0){
+                informarGanador(montoTotal, numeroTicket, posicionTicket);
+            }
             montoTotal -= ticket.getApuesta();
             premios.add(new Premio(-montoTotal));
         }
@@ -100,6 +103,13 @@ public class Quiniela {
             total += premio.getMonto();
         }
         System.out.println("Balance total de la " + this.turno + ": " + total);
+    }
+
+    private void informarGanador(double montoTotal, int numero, int posicion) {
+        System.out.println("¡Felicidades! El ticket es ganador. Premio: $" + montoTotal);
+        System.out.println("Número del ticket ganador: " + numero);
+        System.out.println("Posición del ticket ganador: " + posicion);
+        System.out.println("---------------------------------------");
     }
 }
 
@@ -120,19 +130,6 @@ public class Quiniela {
 //         }
 //         return monto * cantidadRepeticiones / 15;
 //     }
-// }
-
-// private void informarGanador(Ticket ticket, int factorPremio) {
-//     int apuesta = ticket.getApuesta();
-//     int numero = ticket.getNumero();
-//     int posicion = ticket.getPosicion();
-
-//     double premio = calcularPremio(apuesta, factorPremio, posicion, numero);
-
-//     System.out.println("¡Felicidades! El ticket es ganador. Premio: $" + premio);
-//     System.out.println("Número del ticket ganador: " + numero);
-//     System.out.println("Posición del ticket ganador: " + posicion);
-//     System.out.println("---------------------------------------");
 // }
 
 // private void informarNoGanador(Ticket ticket) {

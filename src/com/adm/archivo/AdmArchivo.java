@@ -25,15 +25,15 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 		nodoArboles = new ArrayList<NodoArbol>();
 		tablaHasHuffmanCodigos = new HashMap<Character, String>();
 		tablaHuffman = new HashMap<Character, Integer>();
-		System.out.println("Cargar archivo: " + nombreArchivo);
+		// System.out.println("Cargar archivo: " + nombreArchivo);
 		try {
 			RandomAccessFile file = new RandomAccessFile(nombreArchivo, "r");
 			char dato;
 			int entero;
 			long cont = 0;
 			long tamano = file.length();
-			System.out.print("tama�o: ");
-			System.out.println(tamano);
+			// System.out.print("tama�o: ");
+			// System.out.println(tamano);
 			while (cont < tamano) {
 				file.seek(cont);
 				dato = (char) file.readByte();
@@ -61,7 +61,7 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 		String strBuffer = "";
 		File arch = new File(nomArchivoDestino);
 		if (arch.delete())
-			System.out.println("archivo borrado");
+			// System.out.println("archivo borrado");
 		try {
 			RandomAccessFile archivoOrigen = new RandomAccessFile(nomArchivo, "r");
 			RandomAccessFile archivoDestino = new RandomAccessFile(nomArchivoDestino, "rw");
@@ -132,7 +132,7 @@ public class AdmArchivo implements ICarfarTablaHuffman {
 		File arch = new File(nomArchivoDestino);
 		String codigo="";
 		if (arch.delete())
-			System.out.println("archivo borrado");
+			// System.out.println("archivo borrado");
 		invertirTablatHuffman();
 		try {
 			RandomAccessFile archivoOrigen = new RandomAccessFile(nomArchivo, "r");
